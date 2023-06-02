@@ -19,9 +19,6 @@ const LoginPage: React.FC = () => {
 
   const router = useRouter();
 
-  const loggedInEmail = localStorage.getItem('emailData');
-  const loggedInPass = localStorage.getItem('passData');
-
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     const isEmail: RegExpMatchArray | null = String(email)
@@ -46,6 +43,9 @@ const LoginPage: React.FC = () => {
         'Minimum eight characters, at least one letter, one number and one special character'
       );
     }
+
+    const loggedInEmail = localStorage.getItem('emailData');
+    const loggedInPass = localStorage.getItem('passData');
 
     if (loggedInEmail !== email) {
       return setErrorMessage('User not found, Please Sign Up first.');
