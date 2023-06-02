@@ -3,14 +3,14 @@ import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import LeftComponent from '../../components/LeftComponent';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 library.add(faEye, faEyeSlash);
 
-const LoginPage: React.FC = () => {
+import LeftComponent from '../../../components/LeftComponent';
+
+const SignupPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passVisible, togglePassVisible] = useState<boolean>(false);
@@ -18,9 +18,6 @@ const LoginPage: React.FC = () => {
   const [showMessage, setShowMessage] = useState<boolean>(false);
 
   const router = useRouter();
-
-  const loggedInEmail = localStorage.getItem('emailData');
-  const loggedInPass = localStorage.getItem('passData');
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -46,18 +43,15 @@ const LoginPage: React.FC = () => {
         'Minimum eight characters, at least one letter, one number and one special character'
       );
     }
+    const loggedInEmail = localStorage.getItem('emailData');
 
-    if (loggedInEmail !== email) {
-      return setErrorMessage('User not found, Please Sign Up first.');
+    if (loggedInEmail === email) {
+      return setErrorMessage('User already exists, Please go to Log In page.');
     }
-    if (loggedInPass !== password) {
-      return setErrorMessage(
-        'Password is incorrect, Click on forgot password.'
-      );
-    }
-    if (loggedInEmail === email && loggedInPass === password) {
-      router.push('/home');
-    }
+
+    localStorage.setItem('emailData', email);
+    localStorage.setItem('passData', password);
+    router.push('/');
   };
 
   useEffect(() => {
@@ -86,19 +80,16 @@ const LoginPage: React.FC = () => {
             priority
           />
           <div className="flex justify-center gap-3">
-            <h1 className="font-semibold text-4xl">Welcome</h1>
-            <h1 className="font-semibold text-4xl text-teal-500">Back!</h1>
+            <h1 className="font-semibold text-4xl">Start</h1>
+            <h1 className="font-semibold text-4xl text-teal-500">Fresh!</h1>
           </div>
-          <p className="text-gray-500 my-1"> Glad to see you, Again!</p>
-          <form
-            className="flex flex-col gap-5 mt-8"
-            onSubmit={onSubmit}
-            noValidate
-          >
+          <p className="text-gray-500 my-1">Start your journey with us!</p>
+          <form className="flex flex-col gap-5 mt-8" onSubmit={onSubmit}>
             <input
               aria-label="Email address"
               name="email"
-              type="text"
+              type="email"
+              required
               value={email}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setEmail(e.target.value)
@@ -111,6 +102,7 @@ const LoginPage: React.FC = () => {
                 aria-label="Password"
                 name="password"
                 type={passVisible ? 'text' : 'password'}
+                required
                 value={password}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setPassword(e.target.value)
@@ -118,7 +110,7 @@ const LoginPage: React.FC = () => {
                 className="w-full p-3 px-4 border-2 border-solid border-gray-400 rounded-xl placeholder-gray-400 outline-none"
                 placeholder="Enter your password"
               />
-              <span className="absolute bottom-9 right-3 cursor-pointer text-gray-400 hover:text-gray-500">
+              <span className="absolute bottom-3 right-3 cursor-pointer text-gray-400 hover:text-gray-500">
                 {
                   <FontAwesomeIcon
                     icon={passVisible ? faEyeSlash : faEye}
@@ -126,14 +118,6 @@ const LoginPage: React.FC = () => {
                   />
                 }
               </span>
-              <div className="w-full text-right mt-">
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-gray-500 text-xs"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
             </div>
             {showMessage && (
               <p className="text-red-600 text-sm">{errorMessage}</p>
@@ -142,13 +126,13 @@ const LoginPage: React.FC = () => {
               type="submit"
               className="btn py-3 mt-4 px-auto text-white bg-black hover:bg-slate-900 text-lg font-semibold rounded-xl outline-none shadow-2xl shadow-stone-800"
             >
-              Log In
+              Sign Up
             </button>
           </form>
           <div className="text-sm text-gray-500 mt-16">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-teal-500 hover:text-teal-600">
-              Sign up
+            Already have an account?{' '}
+            <Link href="/" className="text-teal-500 hover:text-teal-600">
+              Log in
             </Link>
           </div>
         </div>
@@ -157,4 +141,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;
